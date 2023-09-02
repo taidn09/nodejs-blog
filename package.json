@@ -2,21 +2,31 @@
   "name": "blog",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "nodemon --inspect index.js"
+    "start": "nodemon --inspect src/index.js",
+    "watch": "node-sass --watch src/resources/scss/ --output src/public/css/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "directory": "git@github.com:taidn09/nodejs-blog.git"
+    "directory": "git+https://github.com/taidn09/nodejs-blog.git"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2",
+    "method-override": "^3.0.0",
+    "moment": "^2.29.4",
+    "mongoose": "^7.5.0",
+    "mongoose-delete": "^1.0.1",
+    "mongoose-slug-generator": "^1.0.4"
   },
   "devDependencies": {
+    "morgan": "^1.10.0",
+    "node-sass": "^9.0.0",
     "nodemon": "^3.0.1"
   }
 }

@@ -1,0 +1,70 @@
+<a class="btn btn-primary mt-3" type="button" href="/"><i class="bi bi-arrow-left-short"></i> Back to list</a>
+
+<h2 class="m-0 mt-4 p-0 fw-bold">BLOG DELETED </h2>
+<table class="table table-hover table-condensed table-responsive align-middle mt-3 w-100 ">
+      <thead>
+            <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Deleted at</th>
+                  <th scope="col">Action</th>
+            </tr>
+      </thead>
+      <tbody>
+
+            {{#each data}}
+            <tr>
+                  <td style="width: 5%">#{{sum @index 1}}</td>
+                  <td style="width: 15%"><a href="{{this.slug}}">{{this.title}}</a></td>
+                  <td style="width: 35%">{{this.description}}</td>
+                  <td style="width: 15%">{{fortmatDate "MM Do YYYY, h:mm:ss a" this.deletedAt}}</td>
+                  <td style="width: 15%">
+                        <a href="" data-id="{{this._id}}" class="btn btn-sm btn-warning restore-btn"><i class="bi bi-pencil-fill"></i> Restore</a>
+                        <a class="btn btn-sm btn-danger delete-blog-btn mt-2" data-bs-toggle="modal" data-bs-target="#delete-modal" data-id="{{this._id}}" data-title="{{this.title}}"><i
+                                    class="bi bi-trash-fill"></i> Permanently Delete</a>
+                  </td>
+            </tr>
+            {{else}}
+            <tr>
+                  <td colspan="7" class="text-center">No blog deleted. <a href="/">Back to blog list.</a></td>
+            </tr>
+            {{/each}}
+      </tbody>
+</table>
+<!-- Modal -->
+<div class="modal fade" id="delete-modal" tabindex="-1">
+      <div class="modal-dialog">
+            <form class="modal-content" id="delete-form" method="post">
+                  <div class="modal-header">
+                        <h5 class="modal-title">Delete blog Confirmation</h5>
+                        <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                        Are you sure to delete <b>""</b>
+                  </div>
+                  <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                  </div>
+            </form>
+      </div>
+</div>
+<form action="" id="restore-form" method="POST"></form>
+<script>
+      document.addEventListener('DOMContentLoaded', function () {
+            $('#delete-modal').on('show.bs.modal', function (event) {
+                  const button = $(event.relatedTarget)
+                  const id = button.data('id')
+                  const title = button.data('title')
+                  $('#delete-form').attr('action', `/${id}/force?_method=DELETE`)
+                  $('.modal-body').html(`Delete <b>"${title}"</b> permanetly ?`)
+            })
+            $('.restore-btn').on('click', function (e) {
+                  e.preventDefault();
+                  const blogId = $(this).data('id')
+                  $('#restore-form').attr('action', `/${blogId}/restore?_method=PATCH`)
+                  $('#restore-form').submit()
+            })
+      })
+</script>

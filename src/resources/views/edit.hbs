@@ -1,0 +1,13 @@
+<form action="/{{data._id}}/?_method=PUT" method="POST">
+      <h3 class="text-center">Edit blog</h3>
+      <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" id="title" placeholder="Enter blog title" value="{{data.title}}">
+      </div>
+      <div class="mb-3">
+            <label for="content" class="form-label">Description</label>
+            <textarea class="form-control" name="description" id="content" rows="8" placeholder="Enter blog description">{{data.description}}</textarea>
+      </div>
+      <button class="btn btn-success" type="submit">Save change <i class="bi bi-check-circle-fill"></i></button>
+      <a class="btn btn-primary" type="button" href="/"><i class="bi bi-arrow-left-short"></i> Back to list</a>
+</form>

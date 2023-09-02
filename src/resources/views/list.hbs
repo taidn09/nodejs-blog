@@ -1,0 +1,98 @@
+<form action="" class="w-100" style="max-width: none;">
+      <a href="/add" class="btn btn-primary mt-3"><i class="bi bi-plus-circle-fill"></i> Add new blog</a>
+      <div class="d-flex mt-4 align-items-end gap-3">
+            <h2 class="m-0 p-0 fw-bold">BLOG LIST </h2><a href="/trash" class="text-decoration-none">Trashbin ({{count}})</a>
+      </div>
+      <div class="mt-3   d-flex align-items-center">
+            <select name="action" class="form-control form-select" style="max-width: 300px;">
+                  <option value="">--Choose action--</option>
+                  <option value="delete">Delete</option>
+                  <option value="hide">Hide</option>
+            </select>
+            <button type="submit" class="btn btn-primary ms-3" id="execute-btn" disabled>Exexute</button>
+      </div>
+      <table class="table table-hover table-condensed table-responsive align-middle mt-3 w-100 ">
+            <thead>
+                  <tr>
+                        <th>
+                              <div class="form-check">
+                                    <input class="form-check-input check-all-checkbox" type="checkbox" value="" id="check-all-checkbox">
+                              </div>
+                        </th>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Created at</th>
+                        <th scope="col">Updated at</th>
+                        <th scope="col">Action</th>
+                  </tr>
+            </thead>
+            <tbody>
+
+                  {{#each data}}
+                  <tr>
+                        <td>
+                              <div class="form-check">
+                                    <input class="form-check-input item-checkbox" name="blogIds[]" type="checkbox" value="{{this._id}}" id="">
+                              </div>
+                        </td>
+                        <td style="width: 5%">#{{sum @index 1}}</td>
+                        <td style="width: 15%"><a href="{{this.slug}}">{{this.title}}</a></td>
+                        <td style="width: 35%">{{this.description}}</td>
+                        <td style="width: 15%">{{fortmatDate "MM Do YYYY, h:mm:ss a" this.createdAt}}</td>
+                        <td style="width: 15%">{{fortmatDate "MM Do YYYY, h:mm:ss a" this.updatedAt}}</td>
+                        <td style="width: 15%">
+                              <a href="/edit/{{this._id}}" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Edit</a>
+                              <a class="btn btn-sm btn-danger delete-blog-btn" data-bs-toggle="modal" data-bs-target="#delete-modal" data-id="{{this._id}}" data-title="{{this.title}}"><i
+                                          class="bi bi-trash-fill"></i> Delete</a>
+                        </td>
+                  </tr>
+                  {{else}}
+                  <tr>
+                        <td colspan="7" class="text-center">You have no blog. <a href="/add">Add your blog here.</a></td>
+                  </tr>
+                  {{/each}}
+            </tbody>
+      </table>
+</form>
+<!-- Modal -->
+<div class="modal fade" id="delete-modal" tabindex="-1">
+      <div class="modal-dialog">
+            <form class="modal-content" id="delete-form" method="post">
+                  <div class="modal-header">
+                        <h5 class="modal-title">Delete blog Confirmation</h5>
+                        <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                        Are you sure to delete <b>""</b>
+                  </div>
+                  <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                  </div>
+            </form>
+      </div>
+</div>
+<script>
+      document.addEventListener('DOMContentLoaded', function () {
+            $('#delete-modal').on('show.bs.modal', function (event) {
+                  const button = $(event.relatedTarget)
+                  const id = button.data('id')
+                  const title = button.data('title')
+                  $('#delete-form').attr('action', `/${id}?_method=DELETE`)
+                  $('.modal-body').html(`Are you sure to delete <b>"${title}"</b>`)
+            })
+            $("#check-all-checkbox").change(function () {
+                  $('.item-checkbox').prop('checked', $(this).prop('checked'))
+                  renderSubmitBtn()
+            })
+
+            $(".item-checkbox").change(function () {
+                  $("#check-all-checkbox").prop('checked', $(".item-checkbox").length == $(".item-checkbox:checked").length)
+                  renderSubmitBtn()
+            })
+            function renderSubmitBtn() {
+                  $('#execute-btn').prop('disabled', $(".item-checkbox:checked").length <= 0)
+            }
+      })
+</script>
