@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const slug = require("mongoose-slug-generator");
 const mongooseDelete = require("mongoose-delete");
 
-const Blog = new Schema(
+const BlogScheme = new Schema(
       {
             title: {
                   type: String,
@@ -13,20 +13,34 @@ const Blog = new Schema(
                   type: String,
                   maxLength: 600,
             },
-            deleted:{
-                  type : Boolean, default: false
+            deleted: {
+                  type: Boolean,
+                  default: false,
             },
-            deletedAt:{
-                  type : Date, default: null
+            deletedAt: {
+                  type: Date,
+                  default: null,
             },
             slug: { type: String, slug: "title" },
       },
       { timestamps: true }
 );
+// custom query helpers
+BlogScheme.query.sortable = function (req) {
+      if(req.query.hasOwnProperty('_sort')){
+            const isValidType = ['asc', 'desc'].includes(req.query.type);
+                  return this.sort({
+                        [req.query.collumn] : isValidType ? req.query.type : 'desc'
+                  })
+            }
+      return this
+};
 
+// add plugin
 mongoose.plugin(slug);
-Blog.plugin(mongooseDelete, { 
+BlogScheme.plugin(mongooseDelete, {
       deletedAt: true,
-      overrideMethods: "all" });
+      overrideMethods: "all",
+});
 
-module.exports = mongoose.model("Blog", Blog);
+module.exports = mongoose.model("Blog", BlogScheme);

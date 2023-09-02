@@ -3,7 +3,7 @@ const { multipleMongooseToObject, mongooseToObject } = require("../../utils/mong
 
 class BlogController {
       index(req, res, next) {
-            Promise.all([Blog.find({}), Blog.countDocumentsWithDeleted({ deleted: true })])
+            Promise.all([Blog.find({}).sortable(req), Blog.countDocumentsWithDeleted({ deleted: true })])
                   .then(([data, count]) => {
                         res.render("list", {
                               data: multipleMongooseToObject(data),
@@ -77,6 +77,37 @@ class BlogController {
                         res.redirect("back");
                   })
                   .catch(next);
+      }
+      formAction(req, res, next) {
+            switch (req.body.action) {
+                  case "delete":
+                        Blog.delete({ _id: { $in: req.body.blogIds } })
+                              .then(() => {
+                                    res.redirect("back");
+                              })
+                              .catch(next);
+                        break;
+                  case "restore":
+                        Blog.restore({ _id: { $in: req.body.blogIds } })
+                              .then(() => {
+                                    res.redirect("back");
+                              })
+                              .catch(next);
+                        break;
+                  case "delete permanetly":
+                        Blog.delete({ _id: { $in: req.body.blogIds } })
+                              .then(() => {
+                                    res.redirect("back");
+                              })
+                              .catch(next);
+                        break;
+                  case "hide":
+                       
+                        break;
+                  default:
+                        res.json({ message: "Action invalid!" });
+                        break;
+            }
       }
 }
 
